@@ -1,13 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:xprinter_sdk/xprinter_sdk.dart';
-import 'package:xprinter_sdk/xprinter_sdk_platform_interface.dart';
-import 'package:xprinter_sdk/xprinter_sdk_method_channel.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:xprinter_sdk/xprinter_sdk.dart';
+import 'package:xprinter_sdk/xprinter_sdk_method_channel.dart';
+import 'package:xprinter_sdk/xprinter_sdk_platform_interface.dart';
 
-class MockXprinterSdkPlatform
-    with MockPlatformInterfaceMixin
-    implements XprinterSdkPlatform {
-
+class MockXprinterSdkPlatform with MockPlatformInterfaceMixin implements XprinterSdkPlatform {
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
 }
@@ -24,6 +21,6 @@ void main() {
     MockXprinterSdkPlatform fakePlatform = MockXprinterSdkPlatform();
     XprinterSdkPlatform.instance = fakePlatform;
 
-    expect(await xprinterSdkPlugin.getPlatformVersion(), '42');
+    expect(await xprinterSdkPlugin.print(), '42');
   });
 }
