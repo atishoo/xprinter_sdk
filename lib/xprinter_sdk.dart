@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:xprinter_sdk/xprinter_sdk_method_channel.dart';
+
+import 'device.dart';
 import 'xprinter_sdk_platform_interface.dart';
 
 class XprinterSdk {
@@ -52,6 +55,8 @@ class XprinterSdk {
   static const int QRCODE_MODE_ORG = 0; // 原始规范
   static const int QRCODE_MODE_ENHANCE = 0; // 增强后的规范
 
+  static Stream<List<BluetoothDevice>> get deviceScanner => MethodChannelXprinterSdk.deviceScanner;
+
   // ******** 连接设备 ****** //
   Future<String?> startScanBluetooth() {
     return XprinterSdkPlatform.instance.startScanBluetooth();
@@ -61,8 +66,8 @@ class XprinterSdk {
     return XprinterSdkPlatform.instance.stopScanBluetooth();
   }
 
-  Future<String?> connectDevice() {
-    return XprinterSdkPlatform.instance.connectDevice();
+  Future<bool?> connectDevice(String mac) {
+    return XprinterSdkPlatform.instance.connectDevice(mac);
   }
 
   Future<String?> disconnectDevice() {

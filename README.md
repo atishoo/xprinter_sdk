@@ -4,12 +4,20 @@ xprinter的flutter版本sdk
 
 ## Getting Started
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/to/develop-plugins),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+### For Android
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+需要将这些内容添加到项目中
+```
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
++       maven {
++           url "${project(':aar').projectDir}/build"  // for build.gradle
++           url = uri(project(":xprinter_sdk").projectDir.resolve("mvn")) // for build.gradle.kts
++       }
++       maven { url 'https://jitpack.io' }
+    }
+}
+```
 

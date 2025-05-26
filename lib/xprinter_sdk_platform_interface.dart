@@ -33,7 +33,7 @@ abstract class XprinterSdkPlatform extends PlatformInterface {
     throw UnimplementedError('stopScanBluetooth() has not been implemented.');
   }
 
-  Future<String?> connectDevice() {
+  Future<bool?> connectDevice(String mac) {
     throw UnimplementedError('connectDevice() has not been implemented.');
   }
 

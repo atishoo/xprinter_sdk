@@ -1,15 +1,30 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
+import 'device.dart';
 import 'xprinter_sdk_platform_interface.dart';
 
 /// An implementation of [XprinterSdkPlatform] that uses method channels.
 class MethodChannelXprinterSdk extends XprinterSdkPlatform {
   /// The method channel used to interact with the native platform.
   @visibleForTesting
-  final methodChannel = const MethodChannel('xprinter_sdk');
+  final methodChannel = const MethodChannel('xprinter_sdk')..setMethodCallHandler((MethodCall call) async {
+    if (call.method == "findBluetoothDevices") {
+      List<BluetoothDevice> result = [];
+      (jsonDecode(call.arguments as String) as List<dynamic>).forEach((dynamic device) {
+        result.add(BluetoothDevice(mac: device['mac'] ?? '', name: device['name']));
+      });
+      _deviceLinstener.add(result);
+    }
+  });
+
+  static StreamController<List<BluetoothDevice>> _deviceLinstener = StreamController.broadcast();
+
+  static Stream<List<BluetoothDevice>> get deviceScanner => _deviceLinstener.stream;
 
   @override
   Future<String?> print() async {
@@ -126,9 +141,8 @@ class MethodChannelXprinterSdk extends XprinterSdkPlatform {
   }
 
   @override
-  Future<String?> connectDevice() async {
-    final version = await methodChannel.invokeMethod<String>('connectDevice');
-    return version;
+  Future<bool?> connectDevice(String mac) {
+    return methodChannel.invokeMethod<bool>('connectDevice', mac);
   }
 
   @override
