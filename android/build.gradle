@@ -73,7 +73,6 @@ android {
         implementation "io.reactivex.rxjava3:rxjava:3.1.5"
         compileOnly files("$flutterRoot/bin/cache/artifacts/engine/android-arm/flutter.jar")
         compileOnly 'androidx.annotation:annotation:1.1.0'
-        implementation 'io.github.jeremyliao:live-event-bus-x:1.8.0'
     }
 
     testOptions {

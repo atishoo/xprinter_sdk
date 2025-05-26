@@ -12,7 +12,6 @@ import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
 import com.androidisland.ezpermission.EzPermission
-import com.jeremyliao.liveeventbus.LiveEventBus
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.JSONUtil
 import io.flutter.plugin.common.MethodCall
