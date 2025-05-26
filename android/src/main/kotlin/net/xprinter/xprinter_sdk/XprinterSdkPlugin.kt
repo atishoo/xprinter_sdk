@@ -164,26 +164,6 @@ class XprinterSdkPlugin: FlutterPlugin, MethodCallHandler {
   }
 
   var curConnect: IDeviceConnection? = null
-  val EVENT_CONNECT_STATUS = "EVENT_CONNECT_STATUS"
-  private val connectListener = IConnectListener { code,connInfo, msg ->
-    when (code) {
-      POSConnect.CONNECT_SUCCESS -> {
-        LiveEventBus.get<Boolean>(EVENT_CONNECT_STATUS).post(true)
-      }
-      POSConnect.CONNECT_FAIL -> {
-        LiveEventBus.get<Boolean>(EVENT_CONNECT_STATUS).post(false)
-      }
-      POSConnect.CONNECT_INTERRUPT -> {
-        LiveEventBus.get<Boolean>(EVENT_CONNECT_STATUS).post(false)
-      }
-      POSConnect.SEND_FAIL -> {
-      }
-      POSConnect.USB_DETACHED -> {
-      }
-      POSConnect.USB_ATTACHED -> {
-      }
-    }
-  }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
     if (call.method == "startScanBluetooth") {
@@ -198,12 +178,9 @@ class XprinterSdkPlugin: FlutterPlugin, MethodCallHandler {
       curConnect?.close()
       result.success(true)
     } else if (call.method == "connectDevice") {
+      POSConnect.init(mContext)
       curConnect?.close()
       curConnect = POSConnect.createDevice(POSConnect.DEVICE_TYPE_BLUETOOTH)
-      println("=========")
-      println(call.arguments.toString())
-      println(call.arguments.toString())
-      println(call.arguments.toString())
       curConnect!!.connect(call.arguments.toString()) { code, connInfo, msg ->
         when (code) {
           POSConnect.CONNECT_SUCCESS -> {
