@@ -19,6 +19,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.reactivex.rxjava3.core.Flowable
+import net.posprinter.CPCLPrinter
 import net.posprinter.IConnectListener
 import net.posprinter.IDeviceConnection
 import net.posprinter.POSConnect
@@ -163,6 +164,7 @@ class XprinterSdkPlugin: FlutterPlugin, MethodCallHandler {
   }
 
   var curConnect: IDeviceConnection? = null
+  var printer: CPCLPrinter? = null
 
   override fun onMethodCall(call: MethodCall, result: Result) {
     if (call.method == "startScanBluetooth") {
@@ -183,6 +185,7 @@ class XprinterSdkPlugin: FlutterPlugin, MethodCallHandler {
       curConnect!!.connect(call.arguments.toString()) { code, connInfo, msg ->
         when (code) {
           POSConnect.CONNECT_SUCCESS -> {
+            printer = CPCLPrinter(curConnect)
             result.success(true)
           }
 
@@ -206,8 +209,10 @@ class XprinterSdkPlugin: FlutterPlugin, MethodCallHandler {
         }
       }
     } else if (call.method == "disconnectDevice") {
+      curConnect?.close()
     } else if (call.method == "writeCommand") {
     } else if (call.method == "initializePrinter") {
+      printer?.initializePrinter(call.argument<Int>("height")!!, call.argument<Int>("height")!!, call.argument<Int>("height")!!)
     } else if (call.method == "setMag") {
     } else if (call.method == "setAlignment") {
     } else if (call.method == "setSpeedLevel") {

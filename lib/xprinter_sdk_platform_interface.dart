@@ -25,19 +25,19 @@ abstract class XprinterSdkPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> startScanBluetooth() {
+  Future<void> startScanBluetooth() {
     throw UnimplementedError('startScanBluetooth() has not been implemented.');
   }
 
-  Future<String?> stopScanBluetooth() {
+  Future<void> stopScanBluetooth() {
     throw UnimplementedError('stopScanBluetooth() has not been implemented.');
   }
 
-  Future<bool?> connectDevice(String mac) {
+  Future<bool> connectDevice(String mac) {
     throw UnimplementedError('connectDevice() has not been implemented.');
   }
 
-  Future<String?> disconnectDevice() {
+  Future<void> disconnectDevice() {
     throw UnimplementedError('disconnectDevice() has not been implemented.');
   }
 
@@ -45,7 +45,7 @@ abstract class XprinterSdkPlatform extends PlatformInterface {
     throw UnimplementedError('writeCommand() has not been implemented.');
   }
 
-  Future<String?> initializePrinter({int height = 0, int offset = 0, int count = 1}) {
+  Future<void> initializePrinter({int height = 0, int offset = 0, int count = 1}) {
     throw UnimplementedError('initializePrinter() has not been implemented.');
   }
 

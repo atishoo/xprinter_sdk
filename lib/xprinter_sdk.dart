@@ -58,19 +58,19 @@ class XprinterSdk {
   static Stream<List<BluetoothDevice>> get deviceScanner => MethodChannelXprinterSdk.deviceScanner;
 
   // ******** 连接设备 ****** //
-  Future<String?> startScanBluetooth() {
+  Future<void> startScanBluetooth() {
     return XprinterSdkPlatform.instance.startScanBluetooth();
   }
 
-  Future<String?> stopScanBluetooth() {
+  Future<void> stopScanBluetooth() {
     return XprinterSdkPlatform.instance.stopScanBluetooth();
   }
 
-  Future<bool?> connectDevice(String mac) {
+  Future<bool> connectDevice(String mac) {
     return XprinterSdkPlatform.instance.connectDevice(mac);
   }
 
-  Future<String?> disconnectDevice() {
+  Future<void> disconnectDevice() {
     return XprinterSdkPlatform.instance.disconnectDevice();
   }
 
@@ -88,8 +88,8 @@ class XprinterSdk {
    * - [offset] x轴偏移位置
    * - [count] 要打印的标签数量，默认为1
    */
-  Future<String?> initializePrinter({int height = 0, int offset = 0, int count = 1}) {
-    return XprinterSdkPlatform.instance.initializePrinter();
+  Future<void> initializePrinter({int height = 0, int offset = 0, int count = 1}) {
+    return XprinterSdkPlatform.instance.initializePrinter(height: height, offset: offset, count: count);
   }
 
   /**

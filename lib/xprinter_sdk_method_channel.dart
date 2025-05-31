@@ -15,9 +15,11 @@ class MethodChannelXprinterSdk extends XprinterSdkPlatform {
   final methodChannel = const MethodChannel('xprinter_sdk')..setMethodCallHandler((MethodCall call) async {
     if (call.method == "findBluetoothDevices") {
       List<BluetoothDevice> result = [];
-      (jsonDecode(call.arguments as String) as List<dynamic>).forEach((dynamic device) {
-        result.add(BluetoothDevice(mac: device['mac'] ?? '', name: device['name']));
-      });
+      if ((call.arguments as String).isNotEmpty) {
+        (jsonDecode(call.arguments as String) as List<dynamic>).forEach((dynamic device) {
+          result.add(BluetoothDevice(mac: device['mac'] ?? '', name: device['name']));
+        });
+      }
       _deviceLinstener.add(result);
     }
   });
@@ -27,7 +29,7 @@ class MethodChannelXprinterSdk extends XprinterSdkPlatform {
   static Stream<List<BluetoothDevice>> get deviceScanner => _deviceLinstener.stream;
 
   @override
-  Future<String?> print() async {
+  Future<String?> print1() async {
     final version = await methodChannel.invokeMethod<String>('print');
     return version;
   }
@@ -123,9 +125,8 @@ class MethodChannelXprinterSdk extends XprinterSdkPlatform {
   }
 
   @override
-  Future<String?> initializePrinter({int height = 0, int offset = 0, int count = 1}) async {
-    final version = await methodChannel.invokeMethod<String>('initializePrinter');
-    return version;
+  Future<void> initializePrinter({int height = 0, int offset = 0, int count = 1}) {
+    return methodChannel.invokeMethod<void>('initializePrinter', {'height': height, 'offset': Offset, 'count': count > 0 ? count : 1});
   }
 
   @override
@@ -135,25 +136,23 @@ class MethodChannelXprinterSdk extends XprinterSdkPlatform {
   }
 
   @override
-  Future<String?> disconnectDevice() async {
-    final version = await methodChannel.invokeMethod<String>('disconnectDevice');
-    return version;
+  Future<void> disconnectDevice() {
+    return methodChannel.invokeMethod<void>('disconnectDevice');
   }
 
   @override
-  Future<bool?> connectDevice(String mac) {
-    return methodChannel.invokeMethod<bool>('connectDevice', mac);
+  Future<bool> connectDevice(String mac) async {
+    bool? result = await methodChannel.invokeMethod<bool>('connectDevice', mac);
+    return result == true;
   }
 
   @override
-  Future<String?> stopScanBluetooth() async {
-    final version = await methodChannel.invokeMethod<String>('stopScanBluetooth');
-    return version;
+  Future<void> stopScanBluetooth() {
+    return methodChannel.invokeMethod<void>('stopScanBluetooth');
   }
 
   @override
-  Future<String?> startScanBluetooth() async {
-    final version = await methodChannel.invokeMethod<String>('startScanBluetooth');
-    return version;
+  Future<void> startScanBluetooth() {
+    return methodChannel.invokeMethod<void>('startScanBluetooth');
   }
 }

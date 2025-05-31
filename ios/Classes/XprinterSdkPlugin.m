@@ -9,15 +9,16 @@
 @property (strong, nonatomic) TSCBLEManager *bleManager;
 @property (strong, nonatomic) NSMutableArray *deviceArr;
 @property (strong, nonatomic) NSMutableArray *rssiList;
+@property (strong, nonatomic) NSMutableData *dataM;
 @end
+
 
 @implementation XprinterSdkPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
     FlutterMethodChannel* channel = [FlutterMethodChannel methodChannelWithName:@"xprinter_sdk" binaryMessenger:[registrar messenger]];
     XprinterSdkPlugin* instance = [[XprinterSdkPlugin alloc] init];
-    [instance setup];
     [registrar addMethodCallDelegate:instance channel:channel];
-    
+    [instance setup:channel];
 }
 
 #pragma mark - lazy
@@ -28,41 +29,42 @@
     return _deviceArr;
 }
 
-- (void) setup {
+- (void) setup:(FlutterMethodChannel *) channel {
+    _channel = channel;
     if (self.bleManager == nil) {
         self.bleManager = [TSCBLEManager sharedInstance];
         self.bleManager.delegate = self;
-        NSLog(@"✅ [setup] self: %@", self);
-        NSLog(@"✅ [setup] delegate 设置后: %@", self.bleManager.delegate);
-        NSLog(@"✅ [setup] bleManager 实例: %@", self.bleManager);
     }
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-//    if (self.bleManager == nil) {
-//        NSLog(@"我滴妈，进来了");
-//        self.bleManager = [TSCBLEManager sharedInstance];
-//        self.bleManager.delegate = self;
-//        NSLog(@"✅ [setup] delegate 设置后xxx: %@", self.bleManager.delegate);
-//    }
   if ([@"startScanBluetooth" isEqualToString:call.method]) {
-      NSLog(@"✅ [setup] delegate 设置后: %@", self.bleManager.delegate);
-      
       [self.bleManager startScan];
-      
-      NSLog(@"今天没吃饭吗");
-      
-      result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
+//      result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
   } else if ([@"stopScanBluetooth" isEqualToString:call.method]) {
       [self.bleManager stopScan];
   } else if ([@"connectDevice" isEqualToString:call.method]) {
-      [self.bleManager connectDevice:self.deviceArr[0]];
+      bool ok = false;
+      for (CBPeripheral *peripheral in self.deviceArr) {
+          // 创建字典并添加到数组
+          if ([[call.arguments stringValue] isEqualToString:peripheral.identifier.UUIDString]) {
+              [self.bleManager connectDevice:peripheral];
+              ok = true;
+              break;
+          }
+      }
+      result(@(ok));
   } else if ([@"disconnectDevice" isEqualToString:call.method]) {
       [self.bleManager disconnectRootPeripheral];
       [self.bleManager stopScan];
   } else if ([@"writeCommand" isEqualToString:call.method]) {
       [self.bleManager writeCommandWithData:nil];
   } else if ([@"initializePrinter" isEqualToString:call.method]) {
+      self.dataM = [[NSMutableData alloc] init];
+      NSLog(@([(NSNumber*)call.arguments[@"height"] intValue]));
+      NSLog(@([(NSNumber*)call.arguments[@"offset"] intValue]));
+      NSLog(@([(NSNumber*)call.arguments[@"count"] intValue]));
+      [CPCLCommand initLabelWithHeight: [(NSNumber*)call.arguments[@"height"] intValue] count: [(NSNumber*)call.arguments[@"count"] intValue] offsetx: [(NSNumber*)call.arguments[@"offset"] intValue]];
   } else if ([@"setMag" isEqualToString:call.method]) {
       [CPCLCommand initLabelWithHeight:23];
   } else if ([@"setAlignment" isEqualToString:call.method]) {
@@ -89,17 +91,24 @@
 
 // 更新蓝牙列表
 - (void)TSCbleUpdatePeripheralList:(NSArray *)peripherals RSSIList:(NSArray *)rssiList{
-    NSLog(@"xxxxx======66666");
     _deviceArr = [NSMutableArray arrayWithArray:peripherals];
     _rssiList = [NSMutableArray arrayWithArray:rssiList];
     // 可以发送给客户端
-    NSLog(@"吃了吃了");
-    NSLog(@"设备数组内容: %@", self.deviceArr);
-    NSLog(@"设备数组内容:");
-    for (id device in self.deviceArr) {
-        NSLog(@"%@", device);
+    NSMutableArray *deviceInfoArray = [NSMutableArray array];
+
+    for (CBPeripheral *peripheral in self.deviceArr) {
+        // 创建字典并添加到数组
+        [deviceInfoArray addObject:@{
+            @"name": peripheral.name ?: nil,
+            @"mac": peripheral.identifier.UUIDString
+        }];
     }
-    NSLog(@"吃完了");
+    
+    // 2. 转换为 JSON 数据
+    NSError *error = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:deviceInfoArray options:NSJSONWritingSortedKeys error:&error];
+    
+    [_channel invokeMethod:@"findBluetoothDevices" arguments:error ? @"" : [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding]];
 }
 
 // 连接成功
