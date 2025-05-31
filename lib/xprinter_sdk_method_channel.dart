@@ -29,7 +29,7 @@ class MethodChannelXprinterSdk extends XprinterSdkPlatform {
   static Stream<List<BluetoothDevice>> get deviceScanner => _deviceLinstener.stream;
 
   @override
-  Future<String?> print1() async {
+  Future<String?> print() async {
     final version = await methodChannel.invokeMethod<String>('print');
     return version;
   }

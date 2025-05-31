@@ -1,7 +1,6 @@
 #import "XprinterSdkPlugin.h"
 #import "TSCBLEManager.h"
 #import "CPCLCommand.h"
-#import <objc/runtime.h>
 
 @interface XprinterSdkPlugin() <TSCBLEManagerDelegate> {
     FlutterMethodChannel *_channel;
