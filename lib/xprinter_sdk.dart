@@ -202,7 +202,7 @@ class XprinterSdk {
    * #### 添加条码注释
    * 添加条码注释
    */
-  Future<String?> addBarcodeText() {
+  Future<void> addBarcodeText() {
     return XprinterSdkPlatform.instance.addBarcodeText();
   }
 
@@ -210,7 +210,7 @@ class XprinterSdk {
    * #### 取消条码注释
    * 取消条码注释
    */
-  Future<String?> removeBarcodeText() {
+  Future<void> removeBarcodeText() {
     return XprinterSdkPlatform.instance.removeBarcodeText();
   }
 

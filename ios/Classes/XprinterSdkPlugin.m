@@ -155,7 +155,9 @@
       [self.dataM appendData:[CPCLCommand drawTextWithx:x.intValue y:y.intValue rotation:drawRotation font:drawFont content:text]];
   } else if ([@"drawBarcode" isEqualToString:call.method]) {
   } else if ([@"addBarcodeText" isEqualToString:call.method]) {
+      [self.dataM appendData: [CPCLCommand barcodeText: 0]];
   } else if ([@"removeBarcodeText" isEqualToString:call.method]) {
+      [self.dataM appendData: [CPCLCommand barcodeTextOff]];
   } else if ([@"drawQRCode" isEqualToString:call.method]) {
   } else if ([@"drawImage" isEqualToString:call.method]) {
   } else if ([@"drawBox" isEqualToString:call.method]) {

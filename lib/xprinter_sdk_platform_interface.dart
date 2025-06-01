@@ -78,11 +78,11 @@ abstract class XprinterSdkPlatform extends PlatformInterface {
     throw UnimplementedError('drawBarcode() has not been implemented.');
   }
 
-  Future<String?> addBarcodeText() {
+  Future<void> addBarcodeText() {
     throw UnimplementedError('addBarcodeText() has not been implemented.');
   }
 
-  Future<String?> removeBarcodeText() {
+  Future<void> removeBarcodeText() {
     throw UnimplementedError('removeBarcodeText() has not been implemented.');
   }
 

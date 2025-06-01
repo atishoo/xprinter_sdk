@@ -70,15 +70,13 @@ class MethodChannelXprinterSdk extends XprinterSdkPlatform {
   }
 
   @override
-  Future<String?> removeBarcodeText() async {
-    final version = await methodChannel.invokeMethod<String>('removeBarcodeText');
-    return version;
+  Future<void> removeBarcodeText() {
+    return methodChannel.invokeMethod<void>('removeBarcodeText');
   }
 
   @override
-  Future<String?> addBarcodeText() async {
-    final version = await methodChannel.invokeMethod<String>('addBarcodeText');
-    return version;
+  Future<void> addBarcodeText() {
+    return methodChannel.invokeMethod<void>('addBarcodeText');
   }
 
   @override

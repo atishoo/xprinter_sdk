@@ -253,7 +253,9 @@ class XprinterSdkPlugin: FlutterPlugin, MethodCallHandler {
       printer?.addText(call.argument<Int>("x")!!, call.argument<Int>("y")!!, drawRotation, drawFont, call.argument<String>("text")!!)
     } else if (call.method.equals("drawBarcode")) {
     } else if (call.method.equals("addBarcodeText")) {
+      printer?.addBarcodeText()
     } else if (call.method.equals("removeBarcodeText")) {
+      printer?.addBarcodeTextOff()
     } else if (call.method.equals("drawQRCode")) {
     } else if (call.method.equals("drawImage")) {
     } else if (call.method.equals("drawBox")) {
