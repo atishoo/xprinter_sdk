@@ -25,7 +25,7 @@ class MethodChannelXprinterSdk extends XprinterSdkPlatform {
     }
   });
 
-  static StreamController<List<BluetoothDevice>> _deviceLinstener = StreamController.broadcast();
+  static final StreamController<List<BluetoothDevice>> _deviceLinstener = StreamController.broadcast();
 
   static Stream<List<BluetoothDevice>> get deviceScanner => _deviceLinstener.stream;
 
