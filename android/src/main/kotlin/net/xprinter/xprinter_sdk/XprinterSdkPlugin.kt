@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.BitmapFactory
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
@@ -24,8 +25,10 @@ import net.posprinter.CPCLPrinter
 import net.posprinter.IConnectListener
 import net.posprinter.IDeviceConnection
 import net.posprinter.POSConnect
+import net.posprinter.model.AlgorithmType
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.ByteArrayInputStream
 import java.util.concurrent.TimeUnit
 
 /** XprinterSdkPlugin */
@@ -175,10 +178,11 @@ class XprinterSdkPlugin: FlutterPlugin, MethodCallHandler {
       mContext.registerReceiver(mBroadcastReceiver, intentFilter)
       requestPermission()
       searchDevices()
+      result.success(null)
     } else if (call.method.equals("stopScanBluetooth")) {
       mContext.unregisterReceiver(mBroadcastReceiver)
       curConnect?.close()
-      result.success(true)
+      result.success(null)
     } else if (call.method.equals("connectDevice")) {
       POSConnect.init(mContext)
       curConnect?.close()
@@ -211,11 +215,16 @@ class XprinterSdkPlugin: FlutterPlugin, MethodCallHandler {
       }
     } else if (call.method.equals("disconnectDevice")) {
       curConnect?.close()
+      result.success(null)
     } else if (call.method.equals("writeCommand")) {
+      printer?.sendData(call.arguments as ByteArray)
+      result.success(null)
     } else if (call.method.equals("initializePrinter")) {
       printer?.initializePrinter(call.argument<Int>("offset")!!, call.argument<Int>("height")!!, call.argument<Int>("count")!!)
+      result.success(null)
     } else if (call.method.equals("setMag")) {
       printer?.setMag(call.argument<Int>("width")!!, call.argument<Int>("height")!!)
+      result.success(null)
     } else if (call.method.equals("setAlignment")) {
       var align = CPCLConst.ALIGNMENT_LEFT
       when (call.argument<Int>("align")) {
@@ -224,12 +233,16 @@ class XprinterSdkPlugin: FlutterPlugin, MethodCallHandler {
         2 -> align = CPCLConst.ALIGNMENT_RIGHT
       }
       printer?.addAlign(align, call.argument<Int>("end")!!)
+      result.success(null)
     } else if (call.method.equals("setSpeedLevel")) {
       printer?.addSpeed(call.arguments as Int)
+      result.success(null)
     } else if (call.method.equals("setPageWidth")) {
       printer?.addPageWidth(call.arguments as Int)
+      result.success(null)
     } else if (call.method.equals("setBeepLength")) {
       printer?.addBeep(call.arguments as Int)
+      result.success(null)
     } else if (call.method.equals("drawText")) {
       var drawFont = CPCLConst.FNT_0
       when (call.argument<Int>("font")) {
@@ -251,20 +264,55 @@ class XprinterSdkPlugin: FlutterPlugin, MethodCallHandler {
         270 -> drawRotation = CPCLConst.ROTATION_270
       }
       printer?.addText(call.argument<Int>("x")!!, call.argument<Int>("y")!!, drawRotation, drawFont, call.argument<String>("text")!!)
+      result.success(null)
     } else if (call.method.equals("drawBarcode")) {
+      var x = call.argument<Int>("x")!!;
+      var y = call.argument<Int>("y")!!;
+      var ratio = call.argument<Int>("ratio")?:CPCLConst.BCS_RATIO_1;
+      var height = call.argument<Int>("height")!!;
+      var width = call.argument<Int>("width") ?: 1;
+      var type = call.argument<String>("type")!!;
+      var data = call.argument<String>("data")!!;
+      var isVertical = call.argument<Boolean>("vertical")?:false;
+      if (isVertical) {
+        printer?.addBarcodeV(x, y, type, width, ratio, height, data)
+      } else {
+        printer?.addBarcode(x, y, type, width, ratio, height, data)
+      }
+      result.success(null)
     } else if (call.method.equals("addBarcodeText")) {
       printer?.addBarcodeText()
+      result.success(null)
     } else if (call.method.equals("removeBarcodeText")) {
       printer?.addBarcodeTextOff()
+      result.success(null)
     } else if (call.method.equals("drawQRCode")) {
+      var codeModel = call.argument<Int>("code_model") ?: CPCLConst.QRCODE_MODE_ENHANCE;
+      var cellWidth = call.argument<Int>("cell_width") ?: 6;
+      if (cellWidth < 1 || cellWidth > 32) {
+        cellWidth = 6
+      }
+      printer?.addQRCode(call.argument<Int>("x")!!, call.argument<Int>("y")!!, codeModel, cellWidth, call.argument<String>("data")!!)
+      result.success(null)
     } else if (call.method.equals("drawImage")) {
+      var bmp = BitmapFactory.decodeStream(ByteArrayInputStream(call.argument<ByteArray>("image")));
+      printer?.addCGraphics(call.argument<Int>("x")!!, call.argument<Int>("y")!!, bmp.width, bmp, AlgorithmType.Dithering)
+      result.success(null)
     } else if (call.method.equals("drawBox")) {
+      printer?.addBox(call.argument<Int>("x")!!, call.argument<Int>("y")!!, call.argument<Int>("width")!!, call.argument<Int>("height")!!, call.argument<Int>("thickness")!!)
+      result.success(null)
     } else if (call.method.equals("drawLine")) {
+      printer?.addLine(call.argument<Int>("x")!!, call.argument<Int>("y")!!, call.argument<Int>("xend")!!, call.argument<Int>("yend")!!, call.argument<Int>("thickness")!!)
+      result.success(null)
     } else if (call.method.equals("drawInverseLine")) {
+      printer?.addInverseLine(call.argument<Int>("x")!!, call.argument<Int>("y")!!, call.argument<Int>("xend")!!, call.argument<Int>("yend")!!, call.argument<Int>("width")!!)
+      result.success(null)
     } else if (call.method.equals("setStringEncoding")) {
       printer?.setCharSet(call.arguments as String)
+      result.success(null)
     } else if (call.method.equals("print")) {
       printer?.addPrint()
+      result.success(null)
     } else {
       result.notImplemented()
     }

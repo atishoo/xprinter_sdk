@@ -36,37 +36,32 @@ class MethodChannelXprinterSdk extends XprinterSdkPlatform {
 
   @override
   Future<void> setStringEncoding(XprinterChatset chatset) {
-    return methodChannel.invokeMethod<String>('setStringEncoding', chatset.value);
+    return methodChannel.invokeMethod<void>('setStringEncoding', chatset.value);
   }
 
   @override
-  Future<String?> drawInverseLine(int x, int y, int xend, int yend, int width) async {
-    final version = await methodChannel.invokeMethod<String>('drawInverseLine');
-    return version;
+  Future<void> drawInverseLine(int x, int y, int xend, int yend, int width) {
+    return methodChannel.invokeMethod<void>('drawInverseLine', {'x': x, 'y': y, 'xend': xend, 'yend': yend, 'width': width});
   }
 
   @override
-  Future<String?> drawLine(int x, int y, int xend, int yend, int thickness) async {
-    final version = await methodChannel.invokeMethod<String>('drawLine');
-    return version;
+  Future<void> drawLine(int x, int y, int xend, int yend, int thickness) {
+    return methodChannel.invokeMethod<void>('drawLine', {'x': x, 'y': y, 'xend': xend, 'yend': yend, 'thickness': thickness});
   }
 
   @override
-  Future<String?> drawBox(int x, int y, int width, int height, int thickness) async {
-    final version = await methodChannel.invokeMethod<String>('drawBox');
-    return version;
+  Future<void> drawBox(int x, int y, int width, int height, int thickness) {
+    return methodChannel.invokeMethod<void>('drawBox', {'x': x, 'y': y, 'width': width, 'height': height, 'thickness': thickness});
   }
 
   @override
-  Future<String?> drawImage(int x, int y, File image) async {
-    final version = await methodChannel.invokeMethod<String>('drawImage');
-    return version;
+  Future<void> drawImage(int x, int y, Uint8List image) {
+    return methodChannel.invokeMethod<void>('drawImage', {'x': x, 'y': y, 'image': image});
   }
 
   @override
-  Future<String?> drawQRCode(int x, int y, String data, {int? codeModel, int? cellWidth}) async {
-    final version = await methodChannel.invokeMethod<String>('drawQRCode');
-    return version;
+  Future<void> drawQRCode(int x, int y, String data, {XprinterQRCodeModel? codeModel, int? cellWidth}) {
+    return methodChannel.invokeMethod<void>('drawQRCode', {'x': x, 'y': y, 'data': data, 'code_model': codeModel?.value, 'cell_width': cellWidth});
   }
 
   @override
@@ -80,9 +75,8 @@ class MethodChannelXprinterSdk extends XprinterSdkPlatform {
   }
 
   @override
-  Future<String?> drawBarcode(int x, int y, String type, int height, String data, {bool vertical = false, int? width, int? ratio}) async {
-    final version = await methodChannel.invokeMethod<String>('drawBarcode');
-    return version;
+  Future<void> drawBarcode(int x, int y, XprinterBarCodeType type, int height, String data, {bool vertical = false, int? width, XprinterBarcodeRatio? ratio}) {
+    return methodChannel.invokeMethod<void>('drawBarcode', {'x': x, 'y': y, 'type': type.value, 'height': height, 'data': data, 'vertical': vertical, 'width': width, 'ratio': ratio?.value});
   }
 
   @override
@@ -121,9 +115,8 @@ class MethodChannelXprinterSdk extends XprinterSdkPlatform {
   }
 
   @override
-  Future<String?> writeCommand() async {
-    final version = await methodChannel.invokeMethod<String>('writeCommand');
-    return version;
+  Future<void> writeCommand(Uint8List data) {
+    return methodChannel.invokeMethod<void>('writeCommand', data);
   }
 
   @override

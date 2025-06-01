@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/services.dart';
+
 import 'consts.dart';
 import 'xprinter_sdk_method_channel.dart';
 
@@ -59,8 +61,8 @@ class XprinterSdk {
     return XprinterSdkPlatform.instance.disconnectDevice();
   }
 
-  Future<String?> writeCommand() {
-    return XprinterSdkPlatform.instance.writeCommand();
+  Future<void> writeCommand(Uint8List data) {
+    return XprinterSdkPlatform.instance.writeCommand(data);
   }
   // ******** 连接设备 END ****** //
 
@@ -133,8 +135,8 @@ class XprinterSdk {
    * #### 绘制文本内容
    * 文本打印
    * ###### 参数说明
-   * - [x] 文本起始的x值
-   * - [y] 文本起始的y值
+   * - [x] 文本起始的x值，单位为mm
+   * - [y] 文本起始的y值，单位为mm
    * - [text] 文本内容
    * - [font] 文本的字体类型：
    *   - [XprinterFontTypes.FONT_0]
@@ -153,49 +155,49 @@ class XprinterSdk {
    *   - [XprinterRotationTypes.ROTATION_180]
    *   - [XprinterRotationTypes.ROTATION_270]
    */
-  Future<void> drawText(int x, int y, String text, {XprintFont? font, XprintRotation? rotation}) {
-    return XprinterSdkPlatform.instance.drawText(x, y, text, font: font, rotation: rotation);
+  Future<void> drawText(double x, double y, String text, {XprintFont? font, XprintRotation? rotation}) {
+    return XprinterSdkPlatform.instance.drawText(_calcPointFromMm(x), _calcPointFromMm(y), text, font: font, rotation: rotation);
   }
 
   /**
    * #### 绘制条形码
    * 绘制条形码
    * ###### 参数说明
-   * - [x] 条码起始点横坐标，单位为点
-   * - [y] 条码起始点纵坐标，单位为点
+   * - [x] 条码起始点横坐标，单位为mm
+   * - [y] 条码起始点纵坐标，单位为mm
    * - [type] 条码类型：
-   *   - [XprinterSdk.BARCODE_TYPE_BCS_128]
-   *   - [XprinterSdk.BARCODE_TYPE_BCS_UPCA]
-   *   - [XprinterSdk.BARCODE_TYPE_BCS_UPCE]
-   *   - [XprinterSdk.BARCODE_TYPE_BCS_EAN13]
-   *   - [XprinterSdk.BARCODE_TYPE_BCS_EAN8]
-   *   - [XprinterSdk.BARCODE_TYPE_BCS_39]
-   *   - [XprinterSdk.BARCODE_TYPE_BCS_93]
-   *   - [XprinterSdk.BARCODE_TYPE_BCS_CODABAR]
-   * - [height] 条码的单位高度。
+   *   - [XprinterBarcodeType.BC_128]
+   *   - [XprinterBarcodeType.BC_UPCA]
+   *   - [XprinterBarcodeType.BC_UPCE]
+   *   - [XprinterBarcodeType.BCS_EAN13]
+   *   - [XprinterBarcodeType.BCS_EAN8]
+   *   - [XprinterBarcodeType.BCS_39]
+   *   - [XprinterBarcodeType.BCS_93]
+   *   - [XprinterBarcodeType.BCS_CODABAR]
+   * - [height] 条码的单位高度，单位为mm
    * - [data] 条码的数据。
    * - [ratio] 宽条与窄条的比率，默认为BCS_RATIO_1：
-   *   - [XprinterSdk.BARCODE_RATIO_0]
-   *   - [XprinterSdk.BARCODE_RATIO_1]
-   *   - [XprinterSdk.BARCODE_RATIO_2]
-   *   - [XprinterSdk.BARCODE_RATIO_3]
-   *   - [XprinterSdk.BARCODE_RATIO_4]
-   *   - [XprinterSdk.BARCODE_RATIO_20]
-   *   - [XprinterSdk.BARCODE_RATIO_21]
-   *   - [XprinterSdk.BARCODE_RATIO_22]
-   *   - [XprinterSdk.BARCODE_RATIO_23]
-   *   - [XprinterSdk.BARCODE_RATIO_24]
-   *   - [XprinterSdk.BARCODE_RATIO_25]
-   *   - [XprinterSdk.BARCODE_RATIO_26]
-   *   - [XprinterSdk.BARCODE_RATIO_27]
-   *   - [XprinterSdk.BARCODE_RATIO_28]
-   *   - [XprinterSdk.BARCODE_RATIO_29]
-   *   - [XprinterSdk.BARCODE_RATIO_30]
-   * - [width] 窄条的单位宽度，默认为1。
+   *   - [XprinterSdk.RATIO_0]
+   *   - [XprinterSdk.RATIO_1]
+   *   - [XprinterSdk.RATIO_2]
+   *   - [XprinterSdk.RATIO_3]
+   *   - [XprinterSdk.RATIO_4]
+   *   - [XprinterSdk.RATIO_20]
+   *   - [XprinterSdk.RATIO_21]
+   *   - [XprinterSdk.RATIO_22]
+   *   - [XprinterSdk.RATIO_23]
+   *   - [XprinterSdk.RATIO_24]
+   *   - [XprinterSdk.RATIO_25]
+   *   - [XprinterSdk.RATIO_26]
+   *   - [XprinterSdk.RATIO_27]
+   *   - [XprinterSdk.RATIO_28]
+   *   - [XprinterSdk.RATIO_29]
+   *   - [XprinterSdk.RATIO_30]
+   * - [width] 窄条的单位宽度，单位为mm，默认为 1 point，不是 1mm
    * - [vertical] 是否纵向。
    */
-  Future<String?> drawBarcode(int x, int y, String type, int height, String data, {bool vertical = false, int? width, int? ratio}) {
-    return XprinterSdkPlatform.instance.drawBarcode(x, y, type, height, data);
+  Future<void> drawBarcode(double x, double y, XprinterBarCodeType type, double height, String data, {bool vertical = false, double? width, XprinterBarcodeRatio? ratio}) {
+    return XprinterSdkPlatform.instance.drawBarcode(_calcPointFromMm(x), _calcPointFromMm(y), type, _calcPointFromMm(height), data, vertical: vertical, width: width == null ? null : _calcPointFromMm(width), ratio: ratio);
   }
 
   /**
@@ -218,16 +220,16 @@ class XprinterSdk {
    * #### 绘制二维码
    * 绘制二维码
    * ###### 参数说明
-   * - [x] 二维码起始点横坐标，单位为点
-   * - [y] 二维码起始点纵坐标，单位为点
+   * - [x] 二维码起始点横坐标，单位为mm
+   * - [y] 二维码起始点纵坐标，单位为mm
    * - [data] 二维码的数据。
    * - [codeModel] 二维码规范编码，默认为QRCODE_MODE_ENHANCE：
-   *   - [XprinterSdk.QRCODE_MODE_ORG]
-   *   - [XprinterSdk.QRCODE_MODE_ENHANCE]
-   * - [cellWidth] 单元格大小，范围：[[1,32]]，默认为6。
+   *   - [XprinterQRCodeModel.CODE_MODE_ORG]
+   *   - [XprinterQRCodeModel.CODE_MODE_ENHANCE]
+   * - [cellWidth] 单元格大小，范围：[[1,32]]，默认为6
    */
-  Future<String?> drawQRCode(int x, int y, String data, {int? codeModel, int? cellWidth}) {
-    return XprinterSdkPlatform.instance.drawQRCode(x, y, data);
+  Future<void> drawQRCode(double x, double y, String data, {XprinterQRCodeModel? codeModel, int? cellWidth}) {
+    return XprinterSdkPlatform.instance.drawQRCode(_calcPointFromMm(x), _calcPointFromMm(y), data, codeModel: codeModel, cellWidth: cellWidth);
   }
 
   /**
@@ -238,7 +240,7 @@ class XprinterSdk {
    * - [y] 图片起始点纵坐标，单位为点
    * - [image] 图片对象
    */
-  Future<String?> drawImage(int x, int y, File image) {
+  Future<void> drawImage(int x, int y, Uint8List image) {
     return XprinterSdkPlatform.instance.drawImage(x, y, image);
   }
 
@@ -246,42 +248,42 @@ class XprinterSdk {
    * #### 绘制矩形
    * 绘制矩形
    * ###### 参数说明
-   * - [x] 矩形起始点横坐标，单位为点
-   * - [y] 矩形起始点纵坐标，单位为点
-   * - [width] 矩形宽度，单位为点
-   * - [height] 矩形高度，单位为点
+   * - [x] 矩形起始点横坐标，单位为mm
+   * - [y] 矩形起始点纵坐标，单位为mm
+   * - [width] 矩形宽度，单位为mm
+   * - [height] 矩形高度，单位为mm
    * - [thickness] 矩形线条宽度
    */
-  Future<String?> drawBox(int x, int y, int width, int height, int thickness) {
-    return XprinterSdkPlatform.instance.drawBox(x, y, width, height, thickness);
+  Future<void> drawBox(double x, double y, double width, double height, int thickness) {
+    return XprinterSdkPlatform.instance.drawBox(_calcPointFromMm(x), _calcPointFromMm(y), _calcPointFromMm(width), _calcPointFromMm(height), thickness);
   }
 
   /**
    * #### 绘制线条
    * 绘制线条
    * ###### 参数说明
-   * - [x] 线条起始点横坐标，单位为点
-   * - [y] 线条起始点纵坐标，单位为点
-   * - [xend] 线条结束横坐标，单位为点
-   * - [yend] 线条结束纵坐标，单位为点
+   * - [x] 线条起始点横坐标，单位为mm
+   * - [y] 线条起始点纵坐标，单位为mm
+   * - [xend] 线条结束横坐标，单位为mm
+   * - [yend] 线条结束纵坐标，单位为mm
    * - [thickness] 线条宽度
    */
-  Future<String?> drawLine(int x, int y, int xend, int yend, int thickness) {
-    return XprinterSdkPlatform.instance.drawLine(x, y, xend, yend, thickness);
+  Future<void> drawLine(double x, double y, double xend, double yend, int thickness) {
+    return XprinterSdkPlatform.instance.drawLine(_calcPointFromMm(x), _calcPointFromMm(y), _calcPointFromMm(xend), _calcPointFromMm(yend), thickness);
   }
 
   /**
    * #### 指定区域的数据黑白反向显示
    * 将指定区域的数据黑白反向显示
    * ###### 参数说明
-   * - [x] 反显区域起始点横坐标，单位为点
-   * - [y] 反显区域起始点纵坐标，单位为点
-   * - [xend] 反显区域结束横坐标，单位为点
-   * - [yend] 反显区域结束纵坐标，单位为点
+   * - [x] 反显区域起始点横坐标，单位为mm
+   * - [y] 反显区域起始点纵坐标，单位为mm
+   * - [xend] 反显区域结束横坐标，单位为mm
+   * - [yend] 反显区域结束纵坐标，单位为mm
    * - [width] 反显区域宽度，单位为点
    */
-  Future<String?> drawInverseLine(int x, int y, int xend, int yend, int width) {
-    return XprinterSdkPlatform.instance.drawInverseLine(x, y, xend, yend, width);
+  Future<void> drawInverseLine(double x, double y, double xend, double yend, int width) {
+    return XprinterSdkPlatform.instance.drawInverseLine(_calcPointFromMm(x), _calcPointFromMm(y), _calcPointFromMm(xend), _calcPointFromMm(yend), width);
   }
 
   /**

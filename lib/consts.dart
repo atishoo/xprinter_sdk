@@ -36,3 +36,47 @@ enum XprinterChatset {
   final String value;
   const XprinterChatset(this.value);
 }
+
+enum XprinterBarCodeType {
+  BC_128('128'),
+  BC_UPCA('UPCA'),
+  BC_UPCE('UPCE'),
+  BCS_EAN13('EAN13'),
+  BCS_EAN8('EAN8'),
+  BCS_39('39'),
+  BCS_93('93'),
+  BCS_CODABAR('CODABAR');
+
+  final String value;
+  const XprinterBarCodeType(this.value);
+}
+
+enum XprinterBarcodeRatio {
+  RATIO_0(0),
+  RATIO_1(1),
+  RATIO_2(2),
+  RATIO_3(3),
+  RATIO_4(4),
+  RATIO_20(20),
+  RATIO_21(21),
+  RATIO_22(22),
+  RATIO_23(23),
+  RATIO_24(24),
+  RATIO_25(25),
+  RATIO_26(26),
+  RATIO_27(27),
+  RATIO_28(28),
+  RATIO_29(29),
+  RATIO_30(30);
+
+  final int value;
+  const XprinterBarcodeRatio(this.value);
+}
+
+enum XprinterQRCodeModel {
+  CODE_MODE_ORG(1),
+  CODE_MODE_ENHANCE(2);
+
+  final int value;
+  const XprinterQRCodeModel(this.value);
+}

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'consts.dart';
@@ -42,7 +43,7 @@ abstract class XprinterSdkPlatform extends PlatformInterface {
     throw UnimplementedError('disconnectDevice() has not been implemented.');
   }
 
-  Future<String?> writeCommand() {
+  Future<void> writeCommand(Uint8List data) {
     throw UnimplementedError('writeCommand() has not been implemented.');
   }
 
@@ -74,7 +75,7 @@ abstract class XprinterSdkPlatform extends PlatformInterface {
     throw UnimplementedError('drawText() has not been implemented.');
   }
 
-  Future<String?> drawBarcode(int x, int y, String type, int height, String data, {bool vertical = false, int? width, int? ratio}) {
+  Future<void> drawBarcode(int x, int y, XprinterBarCodeType type, int height, String data, {bool vertical = false, int? width, XprinterBarcodeRatio? ratio}) {
     throw UnimplementedError('drawBarcode() has not been implemented.');
   }
 
@@ -86,23 +87,23 @@ abstract class XprinterSdkPlatform extends PlatformInterface {
     throw UnimplementedError('removeBarcodeText() has not been implemented.');
   }
 
-  Future<String?> drawQRCode(int x, int y, String data, {int? codeModel, int? cellWidth}) {
+  Future<void> drawQRCode(int x, int y, String data, {XprinterQRCodeModel? codeModel, int? cellWidth}) {
     throw UnimplementedError('drawQRCode() has not been implemented.');
   }
 
-  Future<String?> drawImage(int x, int y, File image) {
+  Future<void> drawImage(int x, int y, Uint8List image) {
     throw UnimplementedError('drawImage() has not been implemented.');
   }
 
-  Future<String?> drawBox(int x, int y, int width, int height, int thickness) {
+  Future<void> drawBox(int x, int y, int width, int height, int thickness) {
     throw UnimplementedError('drawBox() has not been implemented.');
   }
 
-  Future<String?> drawLine(int x, int y, int xend, int yend, int thickness) {
+  Future<void> drawLine(int x, int y, int xend, int yend, int thickness) {
     throw UnimplementedError('drawLine() has not been implemented.');
   }
 
-  Future<String?> drawInverseLine(int x, int y, int xend, int yend, int width) {
+  Future<void> drawInverseLine(int x, int y, int xend, int yend, int width) {
     throw UnimplementedError('drawInverseLine() has not been implemented.');
   }
 
