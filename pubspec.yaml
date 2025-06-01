@@ -1,7 +1,7 @@
 name: xprinter_sdk
 description: "xprinter的flutter版本sdk"
 version: 0.0.1
-homepage:
+homepage: https://github.com/atishoo/xprinter_sdk
 
 environment:
   sdk: ^3.7.2

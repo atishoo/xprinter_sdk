@@ -4,7 +4,6 @@
 // ignore: avoid_web_libraries_in_flutter
 
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
-import 'package:web/web.dart' as web;
 
 import 'xprinter_sdk_platform_interface.dart';
 
@@ -15,12 +14,5 @@ class XprinterSdkWeb extends XprinterSdkPlatform {
 
   static void registerWith(Registrar registrar) {
     XprinterSdkPlatform.instance = XprinterSdkWeb();
-  }
-
-  /// Returns a [String] containing the version of the platform.
-  @override
-  Future<String?> getPlatformVersion() async {
-    final version = web.window.navigator.userAgent;
-    return version;
   }
 }
