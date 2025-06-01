@@ -38,6 +38,10 @@ class XprinterSdk {
 
   static Stream<List<BluetoothDevice>> get deviceScanner => MethodChannelXprinterSdk.deviceScanner;
 
+  int _calcPointFrom(double mm) {
+    return (mm / 25.4 * 203).round();
+  }
+
   // ******** 连接设备 ****** //
   Future<void> startScanBluetooth() {
     return XprinterSdkPlatform.instance.startScanBluetooth();
@@ -65,12 +69,12 @@ class XprinterSdk {
    * #### 初始化打印对象
    * 初始化成功后，就会使用这个对象进行打印
    * ###### 参数说明
-   * - [height] 标签最大高度
-   * - [offset] x轴偏移位置
+   * - [height] 标签最大高度，单位mm
+   * - [offset] x轴偏移位置，单位mm
    * - [count] 要打印的标签数量，默认为1
    */
-  Future<void> initializePrinter({int height = 0, int offset = 0, int count = 1}) {
-    return XprinterSdkPlatform.instance.initializePrinter(height: height, offset: offset, count: count);
+  Future<void> initializePrinter({double height = 0, double offset = 0, int count = 1}) {
+    return XprinterSdkPlatform.instance.initializePrinter(height: _calcPointFrom(height), offset: _calcPointFrom(offset), count: count);
   }
 
   /**
@@ -109,10 +113,10 @@ class XprinterSdk {
    * #### 设置打印宽度
    * 设置打印的宽度
    * ###### 参数说明
-   * - [width] 设置打印宽度
+   * - [width] 设置打印宽度，单位mm
    */
-  Future<void> setPageWidth(int width) {
-    return XprinterSdkPlatform.instance.setPageWidth(width);
+  Future<void> setPageWidth(double width) {
+    return XprinterSdkPlatform.instance.setPageWidth(_calcPointFrom(width));
   }
 
   /**
