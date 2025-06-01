@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'device.dart';
+import 'consts.dart';
 import 'xprinter_sdk_platform_interface.dart';
 
 /// An implementation of [XprinterSdkPlatform] that uses method channels.
@@ -29,9 +30,8 @@ class MethodChannelXprinterSdk extends XprinterSdkPlatform {
   static Stream<List<BluetoothDevice>> get deviceScanner => _deviceLinstener.stream;
 
   @override
-  Future<String?> print() async {
-    final version = await methodChannel.invokeMethod<String>('print');
-    return version;
+  Future<void> print() {
+    return methodChannel.invokeMethod<void>('print');
   }
 
   @override
@@ -89,44 +89,38 @@ class MethodChannelXprinterSdk extends XprinterSdkPlatform {
   }
 
   @override
-  Future<String?> drawText(int x, int y, String text, {String? font, String? rotation}) async {
-    final version = await methodChannel.invokeMethod<String>('drawText');
-    return version;
+  Future<void> drawText(int x, int y, String text, {XprintFont? font, XprintRotation? rotation}) async {
+    return methodChannel.invokeMethod<void>('drawText', {'x': x, 'y': y, 'text': text, 'font': font, 'rotation': rotation});
   }
 
   @override
-  Future<String?> setBeepLength(int length) async {
-    final version = await methodChannel.invokeMethod<String>('setBeepLength');
-    return version;
+  Future<void> setBeepLength(int length) {
+    return methodChannel.invokeMethod<void>('setBeepLength', length);
   }
 
   @override
-  Future<String?> setPageWidth(int width) async {
-    final version = await methodChannel.invokeMethod<String>('setPageWidth');
-    return version;
+  Future<void> setPageWidth(int width) {
+    return methodChannel.invokeMethod<void>('setPageWidth', width);
   }
 
   @override
-  Future<String?> setSpeedLevel(int level) async {
-    final version = await methodChannel.invokeMethod<String>('setSpeedLevel');
-    return version;
+  Future<void> setSpeedLevel(int level) {
+    return methodChannel.invokeMethod<void>('setSpeedLevel', level);
   }
 
   @override
-  Future<String?> setAlignment(int align, {int? end}) async {
-    final version = await methodChannel.invokeMethod<String>('setAlignment');
-    return version;
+  Future<void> setAlignment(XprinterAlignment align, [int end = -1]) {
+    return methodChannel.invokeMethod<void>('setAlignment', {'align': align.index, 'end': end});
   }
 
   @override
-  Future<String?> setMag(int width, int height) async {
-    final version = await methodChannel.invokeMethod<String>('setMag');
-    return version;
+  Future<void> setMag(int width, int height) {
+    return methodChannel.invokeMethod<void>('setMag', {'width': width, 'height': height});
   }
 
   @override
   Future<void> initializePrinter({int height = 0, int offset = 0, int count = 1}) {
-    return methodChannel.invokeMethod<void>('initializePrinter', {'height': height, 'offset': Offset, 'count': count > 0 ? count : 1});
+    return methodChannel.invokeMethod<void>('initializePrinter', {'height': height, 'offset': offset, 'count': count > 0 ? count : 1});
   }
 
   @override

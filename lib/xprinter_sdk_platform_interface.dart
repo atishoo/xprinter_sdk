@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
+import 'consts.dart';
 import 'xprinter_sdk_method_channel.dart';
 
 abstract class XprinterSdkPlatform extends PlatformInterface {
@@ -49,27 +50,27 @@ abstract class XprinterSdkPlatform extends PlatformInterface {
     throw UnimplementedError('initializePrinter() has not been implemented.');
   }
 
-  Future<String?> setMag(int width, int height) {
+  Future<void> setMag(int width, int height) {
     throw UnimplementedError('setMag() has not been implemented.');
   }
 
-  Future<String?> setAlignment(int align, {int? end}) {
+  Future<void> setAlignment(XprinterAlignment align, [int end = -1]) {
     throw UnimplementedError('setAlignment() has not been implemented.');
   }
 
-  Future<String?> setSpeedLevel(int level) {
+  Future<void> setSpeedLevel(int level) {
     throw UnimplementedError('setSpeedLevel() has not been implemented.');
   }
 
-  Future<String?> setPageWidth(int width) {
+  Future<void> setPageWidth(int width) {
     throw UnimplementedError('setPageWidth() has not been implemented.');
   }
 
-  Future<String?> setBeepLength(int length) {
+  Future<void> setBeepLength(int length) {
     throw UnimplementedError('setBeepLength() has not been implemented.');
   }
 
-  Future<String?> drawText(int x, int y, String text, {String? font, String? rotation}) {
+  Future<void> drawText(int x, int y, String text, {XprintFont? font, XprintRotation? rotation}) {
     throw UnimplementedError('drawText() has not been implemented.');
   }
 
@@ -109,7 +110,7 @@ abstract class XprinterSdkPlatform extends PlatformInterface {
     throw UnimplementedError('setStringEncoding() has not been implemented.');
   }
 
-  Future<String?> print() {
+  Future<void> print() {
     throw UnimplementedError('print() has not been implemented.');
   }
 }

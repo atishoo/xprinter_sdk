@@ -19,6 +19,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.reactivex.rxjava3.core.Flowable
+import net.posprinter.CPCLConst
 import net.posprinter.CPCLPrinter
 import net.posprinter.IConnectListener
 import net.posprinter.IDeviceConnection
@@ -212,13 +213,44 @@ class XprinterSdkPlugin: FlutterPlugin, MethodCallHandler {
       curConnect?.close()
     } else if (call.method == "writeCommand") {
     } else if (call.method == "initializePrinter") {
-      printer?.initializePrinter(call.argument<Int>("height")!!, call.argument<Int>("height")!!, call.argument<Int>("height")!!)
+      printer?.initializePrinter(call.argument<Int>("offset")!!, call.argument<Int>("height")!!, call.argument<Int>("count")!!)
     } else if (call.method == "setMag") {
+      printer?.setMag(call.argument<Int>("width")!!, call.argument<Int>("height")!!)
     } else if (call.method == "setAlignment") {
+      var align = CPCLConst.ALIGNMENT_LEFT
+      when (call.argument<Int>("align")!!) {
+        0 -> align = CPCLConst.ALIGNMENT_LEFT
+        1 -> align = CPCLConst.ALIGNMENT_CENTER
+        2 -> align = CPCLConst.ALIGNMENT_RIGHT
+      }
+      printer?.addAlign(align, call.argument<Int>("end")!!)
     } else if (call.method == "setSpeedLevel") {
+      printer?.addSpeed(call.arguments as Int)
     } else if (call.method == "setPageWidth") {
+      printer?.addPageWidth(call.arguments as Int)
     } else if (call.method == "setBeepLength") {
+      printer?.addBeep(call.arguments as Int)
     } else if (call.method == "drawText") {
+      var drawFont = CPCLConst.FNT_0
+      when (call.argument<Int>("font")!!) {
+        0 -> drawFont = CPCLConst.FNT_0
+        1 -> drawFont = CPCLConst.FNT_1
+        2 -> drawFont = CPCLConst.FNT_2
+        4 -> drawFont = CPCLConst.FNT_4
+        5 -> drawFont = CPCLConst.FNT_5
+        6 -> drawFont = CPCLConst.FNT_6
+        7 -> drawFont = CPCLConst.FNT_7
+        24 -> drawFont = CPCLConst.FNT_24
+        55 -> drawFont = CPCLConst.FNT_55
+      }
+      var drawRotation = CPCLConst.ROTATION_0
+      when (call.argument<Int>("rotation")!!) {
+        0 -> drawRotation = CPCLConst.ROTATION_0
+        90 -> drawRotation = CPCLConst.ROTATION_90
+        180 -> drawRotation = CPCLConst.ROTATION_180
+        270 -> drawRotation = CPCLConst.ROTATION_270
+      }
+      printer?.addText(call.argument<Int>("x")!!, call.argument<Int>("y")!!, drawRotation, drawFont, call.argument<String>("text")!!)
     } else if (call.method == "drawBarcode") {
     } else if (call.method == "addBarcodeText") {
     } else if (call.method == "removeBarcodeText") {
@@ -229,7 +261,7 @@ class XprinterSdkPlugin: FlutterPlugin, MethodCallHandler {
     } else if (call.method == "drawInverseLine") {
     } else if (call.method == "setStringEncoding") {
     } else if (call.method == "print") {
-
+      printer?.addPrint()
     } else {
       result.notImplemented()
     }

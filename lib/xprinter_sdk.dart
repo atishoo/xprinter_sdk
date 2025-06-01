@@ -1,31 +1,12 @@
 import 'dart:io';
 
-import 'package:xprinter_sdk/xprinter_sdk_method_channel.dart';
+import 'consts.dart';
+import 'xprinter_sdk_method_channel.dart';
 
 import 'device.dart';
 import 'xprinter_sdk_platform_interface.dart';
 
 class XprinterSdk {
-  static const int ALIGNMENT_LEFT = 0;
-  static const int ALIGNMENT_CENTER = 0;
-  static const int ALIGNMENT_RIGHT = 0;
-
-  static const int FONT_0 = 0;
-  static const int FONT_1 = 0;
-  static const int FONT_2 = 0;
-  static const int FONT_3 = 0;
-  static const int FONT_4 = 0;
-  static const int FONT_5 = 0;
-  static const int FONT_6 = 0;
-  static const int FONT_7 = 0;
-  static const int FONT_24 = 0;
-  static const int FONT_55 = 0;
-
-  static const int ROTATION_0 = 0; // 不旋转
-  static const int ROTATION_90 = 0; // 顺时针旋转90度
-  static const int ROTATION_180 = 0; // 顺时针旋转180度
-  static const int ROTATION_270 = 0; // 顺时针旋转270度
-
   static const String BARCODE_TYPE_BCS_128 = 'BCS_128'; // Code 128
   static const String BARCODE_TYPE_BCS_UPCA = 'BCS_UPCA'; // UPC-A
   static const String BARCODE_TYPE_BCS_UPCE = 'BCS_UPCE'; // UPC-E
@@ -99,7 +80,7 @@ class XprinterSdk {
    * - [width] 宽度放大倍数。有效放大倍数区间为 **_1~16_**
    * - [height] 高度放大倍数。有效放大倍数区间为 **_1~16_**
    */
-  Future<String?> setMag(int width, int height) {
+  Future<void> setMag(int width, int height) {
     return XprinterSdkPlatform.instance.setMag(width, height);
   }
 
@@ -107,11 +88,11 @@ class XprinterSdk {
    * #### 设置字段对齐方式
    * 默认情况下，打印机将左对齐所有字段。对齐命令将对所有后续字段保持有效，直至制定了其他对齐命令。
    * ###### 参数说明
-   * - [align] 对齐方式，[XprinterSdk.ALIGNMENT_LEFT]、[XprinterSdk.ALIGNMENT_CENTER]、[XprinterSdk.ALIGNMENT_RIGHT]
+   * - [align] 对齐方式，[XprinterAlignment.ALIGNMENT_LEFT]、[XprinterAlignment.ALIGNMENT_CENTER]、[XprinterAlignment.ALIGNMENT_RIGHT]
    * - [end] 对齐的结束点
    */
-  Future<String?> setAlignment(int align, {int? end}) {
-    return XprinterSdkPlatform.instance.setAlignment(align);
+  Future<void> setAlignment(XprinterAlignment align, [int end = -1]) {
+    return XprinterSdkPlatform.instance.setAlignment(align, end);
   }
 
   /**
@@ -120,7 +101,7 @@ class XprinterSdk {
    * ###### 参数说明
    * - [level] 打印速度，**_0~5_**
    */
-  Future<String?> setSpeedLevel(int level) {
+  Future<void> setSpeedLevel(int level) {
     return XprinterSdkPlatform.instance.setSpeedLevel(level);
   }
 
@@ -130,7 +111,7 @@ class XprinterSdk {
    * ###### 参数说明
    * - [width] 设置打印宽度
    */
-  Future<String?> setPageWidth(int width) {
+  Future<void> setPageWidth(int width) {
     return XprinterSdkPlatform.instance.setPageWidth(width);
   }
 
@@ -140,7 +121,7 @@ class XprinterSdk {
    * ###### 参数说明
    * - [length] 蜂鸣长度，以1/8秒为单位，比如16的length表示发声时间为2秒
    */
-  Future<String?> setBeepLength(int length) {
+  Future<void> setBeepLength(int length) {
     return XprinterSdkPlatform.instance.setBeepLength(length);
   }
 
@@ -152,24 +133,24 @@ class XprinterSdk {
    * - [y] 文本起始的y值
    * - [text] 文本内容
    * - [font] 文本的字体类型：
-   *   - [XprinterSdk.FONT_0]
-   *   - [XprinterSdk.FONT_1]
-   *   - [XprinterSdk.FONT_2]
-   *   - [XprinterSdk.FONT_3]
-   *   - [XprinterSdk.FONT_4]
-   *   - [XprinterSdk.FONT_5]
-   *   - [XprinterSdk.FONT_6]
-   *   - [XprinterSdk.FONT_7]
-   *   - [XprinterSdk.FONT_24]
-   *   - [XprinterSdk.FONT_55]
+   *   - [XprinterFontTypes.FONT_0]
+   *   - [XprinterFontTypes.FONT_1]
+   *   - [XprinterFontTypes.FONT_2]
+   *   - [XprinterFontTypes.FONT_3]
+   *   - [XprinterFontTypes.FONT_4]
+   *   - [XprinterFontTypes.FONT_5]
+   *   - [XprinterFontTypes.FONT_6]
+   *   - [XprinterFontTypes.FONT_7]
+   *   - [XprinterFontTypes.FONT_24]
+   *   - [XprinterFontTypes.FONT_55]
    * - [rotation] 顺时针旋转角度：
-   *   - [XprinterSdk.ROTATION_0]
-   *   - [XprinterSdk.ROTATION_90]
-   *   - [XprinterSdk.ROTATION_180]
-   *   - [XprinterSdk.ROTATION_270]
+   *   - [XprinterRotationTypes.ROTATION_0]
+   *   - [XprinterRotationTypes.ROTATION_90]
+   *   - [XprinterRotationTypes.ROTATION_180]
+   *   - [XprinterRotationTypes.ROTATION_270]
    */
-  Future<String?> drawText(int x, int y, String text, {String? font, String? rotation}) {
-    return XprinterSdkPlatform.instance.drawText(x, y, text);
+  Future<void> drawText(int x, int y, String text, {XprintFont? font, XprintRotation? rotation}) {
+    return XprinterSdkPlatform.instance.drawText(x, y, text, font: font, rotation: rotation);
   }
 
   /**
@@ -313,7 +294,7 @@ class XprinterSdk {
    * #### 结束命令，启动打印机
    * 整个命令集的结束命令，将会启动文件打印
    */
-  Future<String?> print() {
+  Future<void> print() {
     return XprinterSdkPlatform.instance.print();
   }
 
