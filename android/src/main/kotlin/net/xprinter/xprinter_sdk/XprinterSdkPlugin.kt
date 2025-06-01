@@ -168,18 +168,18 @@ class XprinterSdkPlugin: FlutterPlugin, MethodCallHandler {
   var printer: CPCLPrinter? = null
 
   override fun onMethodCall(call: MethodCall, result: Result) {
-    if (call.method == "startScanBluetooth") {
+    if (call.method.equals("startScanBluetooth")) {
       val intentFilter = IntentFilter()
       intentFilter.addAction(BluetoothDevice.ACTION_FOUND)
       intentFilter.addAction(GPS_ACTION)
       mContext.registerReceiver(mBroadcastReceiver, intentFilter)
       requestPermission()
       searchDevices()
-    } else if (call.method == "stopScanBluetooth") {
+    } else if (call.method.equals("stopScanBluetooth")) {
       mContext.unregisterReceiver(mBroadcastReceiver)
       curConnect?.close()
       result.success(true)
-    } else if (call.method == "connectDevice") {
+    } else if (call.method.equals("connectDevice")) {
       POSConnect.init(mContext)
       curConnect?.close()
       curConnect = POSConnect.createDevice(POSConnect.DEVICE_TYPE_BLUETOOTH)
@@ -209,30 +209,30 @@ class XprinterSdkPlugin: FlutterPlugin, MethodCallHandler {
           }
         }
       }
-    } else if (call.method == "disconnectDevice") {
+    } else if (call.method.equals("disconnectDevice")) {
       curConnect?.close()
-    } else if (call.method == "writeCommand") {
-    } else if (call.method == "initializePrinter") {
+    } else if (call.method.equals("writeCommand")) {
+    } else if (call.method.equals("initializePrinter")) {
       printer?.initializePrinter(call.argument<Int>("offset")!!, call.argument<Int>("height")!!, call.argument<Int>("count")!!)
-    } else if (call.method == "setMag") {
+    } else if (call.method.equals("setMag")) {
       printer?.setMag(call.argument<Int>("width")!!, call.argument<Int>("height")!!)
-    } else if (call.method == "setAlignment") {
+    } else if (call.method.equals("setAlignment")) {
       var align = CPCLConst.ALIGNMENT_LEFT
-      when (call.argument<Int>("align")!!) {
+      when (call.argument<Int>("align")) {
         0 -> align = CPCLConst.ALIGNMENT_LEFT
         1 -> align = CPCLConst.ALIGNMENT_CENTER
         2 -> align = CPCLConst.ALIGNMENT_RIGHT
       }
       printer?.addAlign(align, call.argument<Int>("end")!!)
-    } else if (call.method == "setSpeedLevel") {
+    } else if (call.method.equals("setSpeedLevel")) {
       printer?.addSpeed(call.arguments as Int)
-    } else if (call.method == "setPageWidth") {
+    } else if (call.method.equals("setPageWidth")) {
       printer?.addPageWidth(call.arguments as Int)
-    } else if (call.method == "setBeepLength") {
+    } else if (call.method.equals("setBeepLength")) {
       printer?.addBeep(call.arguments as Int)
-    } else if (call.method == "drawText") {
+    } else if (call.method.equals("drawText")) {
       var drawFont = CPCLConst.FNT_0
-      when (call.argument<Int>("font")!!) {
+      when (call.argument<Int>("font")) {
         0 -> drawFont = CPCLConst.FNT_0
         1 -> drawFont = CPCLConst.FNT_1
         2 -> drawFont = CPCLConst.FNT_2
@@ -244,23 +244,23 @@ class XprinterSdkPlugin: FlutterPlugin, MethodCallHandler {
         55 -> drawFont = CPCLConst.FNT_55
       }
       var drawRotation = CPCLConst.ROTATION_0
-      when (call.argument<Int>("rotation")!!) {
+      when (call.argument<Int>("rotation")) {
         0 -> drawRotation = CPCLConst.ROTATION_0
         90 -> drawRotation = CPCLConst.ROTATION_90
         180 -> drawRotation = CPCLConst.ROTATION_180
         270 -> drawRotation = CPCLConst.ROTATION_270
       }
       printer?.addText(call.argument<Int>("x")!!, call.argument<Int>("y")!!, drawRotation, drawFont, call.argument<String>("text")!!)
-    } else if (call.method == "drawBarcode") {
-    } else if (call.method == "addBarcodeText") {
-    } else if (call.method == "removeBarcodeText") {
-    } else if (call.method == "drawQRCode") {
-    } else if (call.method == "drawImage") {
-    } else if (call.method == "drawBox") {
-    } else if (call.method == "drawLine") {
-    } else if (call.method == "drawInverseLine") {
-    } else if (call.method == "setStringEncoding") {
-    } else if (call.method == "print") {
+    } else if (call.method.equals("drawBarcode")) {
+    } else if (call.method.equals("addBarcodeText")) {
+    } else if (call.method.equals("removeBarcodeText")) {
+    } else if (call.method.equals("drawQRCode")) {
+    } else if (call.method.equals("drawImage")) {
+    } else if (call.method.equals("drawBox")) {
+    } else if (call.method.equals("drawLine")) {
+    } else if (call.method.equals("drawInverseLine")) {
+    } else if (call.method.equals("setStringEncoding")) {
+    } else if (call.method.equals("print")) {
       printer?.addPrint()
     } else {
       result.notImplemented()
