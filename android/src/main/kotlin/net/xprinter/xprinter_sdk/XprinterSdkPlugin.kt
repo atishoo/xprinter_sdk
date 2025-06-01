@@ -260,6 +260,7 @@ class XprinterSdkPlugin: FlutterPlugin, MethodCallHandler {
     } else if (call.method.equals("drawLine")) {
     } else if (call.method.equals("drawInverseLine")) {
     } else if (call.method.equals("setStringEncoding")) {
+      printer?.setCharSet(call.arguments as String)
     } else if (call.method.equals("print")) {
       printer?.addPrint()
     } else {

@@ -35,9 +35,8 @@ class MethodChannelXprinterSdk extends XprinterSdkPlatform {
   }
 
   @override
-  Future<String?> setStringEncoding(String chatset) async {
-    final version = await methodChannel.invokeMethod<String>('setStringEncoding');
-    return version;
+  Future<void> setStringEncoding(XprinterChatset chatset) {
+    return methodChannel.invokeMethod<String>('setStringEncoding', chatset.value);
   }
 
   @override

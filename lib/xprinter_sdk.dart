@@ -38,7 +38,7 @@ class XprinterSdk {
 
   static Stream<List<BluetoothDevice>> get deviceScanner => MethodChannelXprinterSdk.deviceScanner;
 
-  int _calcPointFrom(double mm) {
+  int _calcPointFromMm(double mm) {
     return (mm / 25.4 * 203).round();
   }
 
@@ -74,7 +74,7 @@ class XprinterSdk {
    * - [count] 要打印的标签数量，默认为1
    */
   Future<void> initializePrinter({double height = 0, double offset = 0, int count = 1}) {
-    return XprinterSdkPlatform.instance.initializePrinter(height: _calcPointFrom(height), offset: _calcPointFrom(offset), count: count);
+    return XprinterSdkPlatform.instance.initializePrinter(height: _calcPointFromMm(height), offset: _calcPointFromMm(offset), count: count);
   }
 
   /**
@@ -116,7 +116,7 @@ class XprinterSdk {
    * - [width] 设置打印宽度，单位mm
    */
   Future<void> setPageWidth(double width) {
-    return XprinterSdkPlatform.instance.setPageWidth(_calcPointFrom(width));
+    return XprinterSdkPlatform.instance.setPageWidth(_calcPointFromMm(width));
   }
 
   /**
@@ -288,9 +288,9 @@ class XprinterSdk {
    * #### 设置字符编码
    * 设置将打印内容传输给打印机所采用的字符编码，默认编码为gbk
    * ###### 参数说明
-   * - [chatset] 打印机所能识别的字符编码类型
+   * - [chatset] 打印机所能识别的字符编码类型，没有默认值，参考 [XprinterChatset] 的枚举值
    */
-  Future<String?> setStringEncoding(String chatset) {
+  Future<void> setStringEncoding(XprinterChatset chatset) {
     return XprinterSdkPlatform.instance.setStringEncoding(chatset);
   }
 

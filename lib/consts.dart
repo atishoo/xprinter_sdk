@@ -23,3 +23,16 @@ class XprinterRotationTypes {
   static const XprintRotation ROTATION_180 = 180;
   static const XprintRotation ROTATION_270 = 270;
 }
+
+enum XprinterChatset {
+  GBK('GBK'),
+  UTF_8('UTF-8'),
+  UTF_16('UTF-16'),
+  UTF_16BE('UTF-16BE'),
+  UTF_16LE('UTF-16LE'),
+  ISO_8859_1('ISO-8859-1'),
+  US_ASCII('US-ASCII');
+
+  final String value;
+  const XprinterChatset(this.value);
+}

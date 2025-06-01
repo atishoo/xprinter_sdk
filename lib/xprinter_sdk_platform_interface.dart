@@ -106,7 +106,7 @@ abstract class XprinterSdkPlatform extends PlatformInterface {
     throw UnimplementedError('drawInverseLine() has not been implemented.');
   }
 
-  Future<String?> setStringEncoding(String chatset) {
+  Future<void> setStringEncoding(XprinterChatset chatset) {
     throw UnimplementedError('setStringEncoding() has not been implemented.');
   }
 

@@ -28,6 +28,7 @@
     return _deviceArr;
 }
 
+# pragma mark - 初始化class
 - (void) setup:(FlutterMethodChannel *) channel {
     _channel = channel;
     if (self.bleManager == nil) {
@@ -36,6 +37,7 @@
     }
 }
 
+# pragma mark - 方法映射
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
   if ([@"startScanBluetooth" isEqualToString:call.method]) {
       [self.bleManager startScan];
@@ -60,9 +62,7 @@
       [self.bleManager writeCommandWithData:nil];
   } else if ([@"initializePrinter" isEqualToString:call.method]) {
       self.dataM = [[NSMutableData alloc] init];
-      NSLog(@([(NSNumber*)call.arguments[@"height"] intValue]));
-      NSLog(@([(NSNumber*)call.arguments[@"offset"] intValue]));
-      NSLog(@([(NSNumber*)call.arguments[@"count"] intValue]));
+      [CPCLCommand setStringEncoding: CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000)];
       [self.dataM appendData:[CPCLCommand initLabelWithHeight: [(NSNumber*)call.arguments[@"height"] intValue] count: [(NSNumber*)call.arguments[@"count"] intValue] offsetx: [(NSNumber*)call.arguments[@"offset"] intValue]]];
   } else if ([@"setMag" isEqualToString:call.method]) {
       [self.dataM appendData:[CPCLCommand setmagWithw:[(NSNumber*)call.arguments[@"width"] intValue] h:[(NSNumber*)call.arguments[@"height"] intValue]]];
@@ -86,7 +86,7 @@
   } else if ([@"setSpeedLevel" isEqualToString:call.method]) {
       [self.dataM appendData:[CPCLCommand setSpeedLevel: [(NSNumber *)call.arguments intValue]]];
   } else if ([@"setPageWidth" isEqualToString:call.method]) {
-      [self.dataM appendData:[CPCLCommand setPageWidth:[(NSNumber *)call.arguments intValue]]];
+      [self.dataM appendData:[CPCLCommand setPageWidth: [(NSNumber *)call.arguments intValue]]];
   } else if ([@"setBeepLength" isEqualToString:call.method]) {
       [self.dataM appendData:[CPCLCommand setBeepLength:[(NSNumber *)call.arguments intValue]]];
   } else if ([@"drawText" isEqualToString:call.method]) {
@@ -95,58 +95,62 @@
       NSNumber* y = (NSNumber*) args[@"y"];
       NSString* text = (NSString*) args[@"text"];
       CPCLFont drawFont = FNT_0;
-      switch ([(NSNumber*) args[@"font"] intValue]) {
-          case 0:
-              drawFont = FNT_0;
-              break;
-          case 1:
-              drawFont = FNT_1;
-              break;
-          case 2:
-              drawFont = FNT_2;
-              break;
-          case 3:
-              drawFont = FNT_3;
-              break;
-          case 4:
-              drawFont = FNT_4;
-              break;
-          case 5:
-              drawFont = FNT_5;
-              break;
-          case 6:
-              drawFont = FNT_6;
-              break;
-          case 7:
-              drawFont = FNT_7;
-              break;
-          case 24:
-              drawFont = FNT_24;
-              break;
-          case 55:
-              drawFont = FNT_55;
-              break;
-              
-          default:
-              break;
+      if (args[@"font"] != [NSNull null]) {
+          switch ([(NSNumber*) args[@"font"] intValue]) {
+              case 0:
+                  drawFont = FNT_0;
+                  break;
+              case 1:
+                  drawFont = FNT_1;
+                  break;
+              case 2:
+                  drawFont = FNT_2;
+                  break;
+              case 3:
+                  drawFont = FNT_3;
+                  break;
+              case 4:
+                  drawFont = FNT_4;
+                  break;
+              case 5:
+                  drawFont = FNT_5;
+                  break;
+              case 6:
+                  drawFont = FNT_6;
+                  break;
+              case 7:
+                  drawFont = FNT_7;
+                  break;
+              case 24:
+                  drawFont = FNT_24;
+                  break;
+              case 55:
+                  drawFont = FNT_55;
+                  break;
+                  
+              default:
+                  break;
+          }
       }
       CPCLRotation drawRotation = ROTA_0;
-      switch ([(NSNumber*) args[@"rotation"] intValue]) {
-          case 0:
-              drawRotation = ROTA_0;
-              break;
-          case 90:
-              drawRotation = ROTA_90;
-              break;
-          case 180:
-              drawRotation = ROTA_180;
-              break;
-          case 270:
-              drawRotation = ROTA_270;
-              break;
-              
-          default:
-              break;
+      if (args[@"rotation"] != [NSNull null]) {
+          switch ([(NSNumber*) args[@"rotation"] intValue]) {
+              case 0:
+                  drawRotation = ROTA_0;
+                  break;
+              case 90:
+                  drawRotation = ROTA_90;
+                  break;
+              case 180:
+                  drawRotation = ROTA_180;
+                  break;
+              case 270:
+                  drawRotation = ROTA_270;
+                  break;
+                  
+              default:
+                  break;
+          }
       }
       [self.dataM appendData:[CPCLCommand drawTextWithx:x.intValue y:y.intValue rotation:drawRotation font:drawFont content:text]];
   } else if ([@"drawBarcode" isEqualToString:call.method]) {
@@ -158,6 +162,24 @@
   } else if ([@"drawLine" isEqualToString:call.method]) {
   } else if ([@"drawInverseLine" isEqualToString:call.method]) {
   } else if ([@"setStringEncoding" isEqualToString:call.method]) {
+      NSString *argCharset = (NSString *)call.arguments;
+      NSStringEncoding chatset = NSUTF8StringEncoding;
+      if ([argCharset isEqual:@"GBK"]) {
+          chatset = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+      } else if ([argCharset isEqual:@"UTF-8"]) {
+          chatset = NSUTF8StringEncoding;
+      } else if ([argCharset isEqual:@"UTF-16"]) {
+          chatset = NSUTF16StringEncoding;
+      } else if ([argCharset isEqual:@"UTF-16BE"]) {
+          chatset = NSUTF16BigEndianStringEncoding;
+      } else if ([argCharset isEqual:@"UTF-16LE"]) {
+          chatset = NSUTF16LittleEndianStringEncoding;
+      } else if ([argCharset isEqual:@"ISO-8859-1"]) {
+          chatset = NSISOLatin1StringEncoding;
+      } else if ([argCharset isEqual:@"US-ASCII"]) {
+          chatset = NSASCIIStringEncoding;
+      }
+      [CPCLCommand setStringEncoding:chatset];
   } else if ([@"print" isEqualToString:call.method]) {
       [self.dataM appendData:[CPCLCommand form]];
       [self.dataM appendData:[CPCLCommand print]];
