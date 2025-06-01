@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/services.dart';
 
 import 'consts.dart';
-import 'xprinter_sdk_method_channel.dart';
-
 import 'device.dart';
+import 'xprinter_sdk_method_channel.dart';
 import 'xprinter_sdk_platform_interface.dart';
 
 class XprinterSdk {

@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-import 'device.dart';
 import 'consts.dart';
+import 'device.dart';
 import 'xprinter_sdk_platform_interface.dart';
 
 /// An implementation of [XprinterSdkPlatform] that uses method channels.
