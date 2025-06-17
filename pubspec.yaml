@@ -1,5 +1,6 @@
 name: xprinter_sdk
-description: "xprinter的flutter版本sdk"
+description: |
+  An unofficial SDK for Xprinter brand printers, using the CPCL directive.
 version: 0.0.1
 homepage: https://github.com/atishoo/xprinter_sdk
 
