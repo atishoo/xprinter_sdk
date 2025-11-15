@@ -1,4 +1,28 @@
 #import "XprinterSdkPlugin.h"
+
+#if TARGET_OS_SIMULATOR
+
+@implementation XprinterSdkPlugin
+
++ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
+    FlutterMethodChannel* channel =
+        [FlutterMethodChannel methodChannelWithName:@"xprinter_sdk"
+                                    binaryMessenger:[registrar messenger]];
+    XprinterSdkPlugin* instance = [[XprinterSdkPlugin alloc] init];
+    [registrar addMethodCallDelegate:instance channel:channel];
+}
+
+- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    // 模拟器下统一提示不可用（你也可以区分方法单独处理）
+    result([FlutterError errorWithCode:@"UNAVAILABLE_ON_SIMULATOR"
+                               message:@"xprinter_sdk only supports running on physical devices, please debug on a real device."
+                               details:nil]);
+}
+
+@end
+
+#else
+
 #import "TSCBLEManager.h"
 #import "CPCLCommand.h"
 
@@ -137,7 +161,7 @@
               case 55:
                   drawFont = FNT_55;
                   break;
-                  
+
               default:
                   break;
           }
@@ -157,7 +181,7 @@
               case 270:
                   drawRotation = ROTA_270;
                   break;
-                  
+
               default:
                   break;
           }
@@ -177,7 +201,7 @@
       NSString* type = (NSString*) args[@"type"];
       NSString* data = (NSString*) args[@"data"];
       NSNumber* isVertical = (NSNumber *) args[@"vertical"];
-      
+
       CPCLBarCode codeType = BC_128;
       if ([type isEqual:@"128"]) {
           codeType = BC_128;
@@ -200,7 +224,7 @@
       if (![ratio isEqual:[NSNull null]]) {
           ratioType = (CPCLBarCodeRatio)ratio.intValue;
       }
-      
+
       if (isVertical.boolValue) {
           [self.dataM appendData:[CPCLCommand drawBarcodeVerticalWithx:x.intValue y:y.intValue codeType:codeType height:height.intValue ratio:ratioType content:data]];
       } else {
@@ -319,11 +343,11 @@
             @"mac": peripheral.identifier.UUIDString
         }];
     }
-    
+
     // 2. 转换为 JSON 数据
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:deviceInfoArray options:NSJSONWritingSortedKeys error:&error];
-    
+
     [_channel invokeMethod:@"findBluetoothDevices" arguments:error ? @"" : [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding]];
 }
 
@@ -339,7 +363,8 @@
 
 // 断开连接
 - (void)TSCbleDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
-    
+
 }
 
 @end
+#endif

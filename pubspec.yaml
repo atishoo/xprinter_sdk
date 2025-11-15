@@ -1,7 +1,7 @@
 name: xprinter_sdk
 description: |
   An unofficial SDK for Xprinter brand printers, using the CPCL directive.
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/atishoo/xprinter_sdk
 
 environment:
