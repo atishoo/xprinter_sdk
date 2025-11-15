@@ -1,6 +1,6 @@
 ## 0.0.3
 
-* Optimization form iOS
+* Optimization for iOS
 
 ## 0.0.2
 
